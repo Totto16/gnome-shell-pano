@@ -58,6 +58,14 @@ export const getMonitorIndexForPointer = () => {
   for (let i = 0; i <= monitors.length; i++) {
     const monitor = monitors[i];
 
+    //TODO: debug this issue, sometimes (around 20% of the time) monitor[1] (on my dual monitor setup) is undefined
+    // It also occurred to me, while debugging, that on a single monitor setup it was undefined!
+    // NOTE: that this has just happened to me in nested shells while debugging, in production and a normal environment this didn't occur (yet)
+    if (!monitor) {
+      console.error(`ERROR: Couldn't get the monitor ${i}`);
+      continue;
+    }
+
     if (x >= monitor.x && x < monitor.x + monitor.width && y >= monitor.y && y < monitor.y + monitor.height) {
       return i;
     }
