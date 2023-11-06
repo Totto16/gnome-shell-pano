@@ -10,7 +10,7 @@ export class MonitorBox extends BoxLayout {
   static metaInfo: MetaInfo = {
     GTypeName: 'MonitorBox',
     Signals: {
-      hide: {},
+      hide_window: {},
     },
   };
 
@@ -26,7 +26,7 @@ export class MonitorBox extends BoxLayout {
     });
 
     this.connect('button-press-event', () => {
-      this.emit('hide');
+      this.emit('hide_window');
       return EVENT_STOP;
     });
 
