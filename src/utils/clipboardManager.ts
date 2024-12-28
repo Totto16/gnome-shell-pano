@@ -158,10 +158,12 @@ export class ClipboardManager extends GObject.Object {
 
     this.selectionChangedId = this.selection.connect(
       'owner-changed',
-      async (_selection: Selection, selectionType: Meta.SelectionType, _selectionSource: Meta.SelectionSource) => {
+      async (selection: Meta.Selection, selectionType: Meta.SelectionType, _selectionSource: Meta.SelectionSource) => {
         if (this.settings.get_boolean('is-in-incognito')) {
           return;
         }
+        debug('selection.get_mimetypes: ' + selection.get_mimetypes(selectionType).join(' , '));
+
         const focussedWindow = Shell.Global.get().display.focusWindow;
         const wmClass = focussedWindow?.get_wm_class();
         //   debug(wmClass ?? 'NO WM CLASS');
