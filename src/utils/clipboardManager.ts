@@ -17,6 +17,8 @@ const MimeType = {
   IMAGE: ['image/png'],
   GNOME_FILE: ['x-special/gnome-copied-files'],
   SENSITIVE: ['x-kde-passwordManagerHint'],
+  // https://phpspot.net/php/man/gtk/tutorials.filednd.urilist.html
+  URIS: ['text/uri-list'],
 } as const;
 
 export const enum ContentType {
@@ -162,6 +164,9 @@ export class ClipboardManager extends GObject.Object {
         }
         const focussedWindow = Shell.Global.get().display.focusWindow;
         const wmClass = focussedWindow?.get_wm_class();
+        //   debug(wmClass ?? 'NO WM CLASS');
+        //   debug(_selectionSource.get_mimetypes().join(', '));
+        //   debug(selectionType.toString());
         if (
           wmClass &&
           this.settings.get_boolean('watch-exclusion-list') &&
@@ -247,10 +252,24 @@ export class ClipboardManager extends GObject.Object {
   private async getContent(clipboardType: St.ClipboardType): Promise<ClipboardContent | null> {
     return new Promise((resolve) => {
       const cbMimeTypes = this.clipboard.get_mimetypes(clipboardType);
+      //  debug('cbMimeTypes: ' + cbMimeTypes.join(', '));
       if (this.haveMimeType(cbMimeTypes, MimeType.SENSITIVE)) {
         resolve(null);
         return;
-      } else if (this.haveMimeType(cbMimeTypes, MimeType.GNOME_FILE)) {
+      } /*  else if (this.haveMimeType(cbMimeTypes, MimeType.URIS)) {
+        const currentMimeType = this.getCurrentMimeType(cbMimeTypes, MimeType.URIS);
+        debug('currentMimeType ' + (currentMimeType ?? 'NO'));
+        if (!currentMimeType) {
+          resolve(null);
+          return;
+        }
+
+        this.clipboard.get_content(clipboardType, currentMimeType, (_, bytes: GLib.Bytes | Uint8Array) => {
+          const data = bytes instanceof GLib.Bytes ? bytes.get_data() : bytes;
+          debug('data ' + (data?.toString() ?? 'NO'));
+          resolve(null);
+        }); 
+      } */ else if (this.haveMimeType(cbMimeTypes, MimeType.GNOME_FILE)) {
         const currentMimeType = this.getCurrentMimeType(cbMimeTypes, MimeType.GNOME_FILE);
         if (!currentMimeType) {
           resolve(null);

@@ -16,6 +16,8 @@ import { createPanoItem, createPanoItemFromDb, removeItemResources } from '@pano
 import { getCurrentExtensionSettings } from '@pano/utils/shell';
 import { isVertical } from '@pano/utils/ui';
 
+//const debug = logger('HEREPANO');
+
 export type PanoScrollViewSignalType =
   | 'scroll-focus-out'
   | 'scroll-update-list'
@@ -171,6 +173,8 @@ export class PanoScrollView extends St.ScrollView {
     this.clipboardChangedSignalId = this.clipboardManager.connect(
       'changed',
       async (_: any, content: ClipboardContent) => {
+        // debug(JSON.stringify(a));
+        // debug(JSON.stringify(content));
         const panoItem = await createPanoItem(ext, this.clipboardManager, content);
         if (panoItem && this) {
           this.prependItem(panoItem);
